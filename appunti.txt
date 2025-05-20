@@ -1,0 +1,83 @@
+SHELL
+CONTROLLI:
+numero di argomenti (sostituisci N)
+	if [[ $# != N ]]; then
+	    echo "Errore: numero di argomenti non corretto" 
+	    echo  "Usage: $0 S reportFile dir" 
+	    exit 1
+	fi
+	
+se un parametro è basename
+	if [[ "$2" = */* ]] ; then
+	    echo "Errore secondo parametro: $2 deve essere un basename" 
+	    exit 1
+	fi
+	
+directory sia un path assoluto e che esista
+	case "$3" in
+	/*) 
+	    #la directory inizia correttamente per /. Ora controllo anche che sia davvero una directory esistente  
+	    if ! [[ -d "$3" ]]; then
+	        echo "Errore terzo parametro: $3 non esiste o non è una directory" 
+	        exit 1
+	    fi
+	    ;;
+	*)
+	    #il nome della directory non inizia per /, quindi non è un path assoluto
+	    echo "Errore terzo parametro: $3 non è una directory assoluta" 
+	    exit 1
+	    ;;
+	esac
+	
+chiamata generale per ricorsione
+	recfile=recursion.sh
+	#definizione della stringa da invocare per l'esecuzione del file comandi ricorsivo:
+	case "$0" in
+	    # il file comandi è stato invocato con un / Path assoluto.
+	    /*) 
+	    dir_name=`dirname $0`
+	    recursive_command="$dir_name"/$recfile
+	    ;;
+	    */*)
+	    # il file comandi è stato invocato con un path relativo.
+	    dir_name=`dirname $0`
+	    recursive_command="`pwd`/$dir_name/$recfile"
+	    ;;
+	    *)
+	    #Path né assoluto né relativo, il comando è nel $PATH
+	    recursive_command=$recfile
+	    ;;
+	esac
+	#innesco la ricorsione
+	"$recursive_command" "$1" "$2" "$3"
+
+sia un file
+	[[ -f "$file" ]]
+
+sia una directory
+	[[ -d "$file" ]]
+
+sia scrivibile
+	[[ -w "$file" ]]
+
+sia un intero (con o senza segno)
+	if [[ $3 = [-+]* ]]; then
+	    num="${3:1}"
+	else
+	    num="$3"
+	fi
+	
+	if [[ $num = *[!0-9]* || -z $num ]]; then
+	    echo "Errore parametro 3: $3 non è un intero (positivo o negativo)" 1>&2
+	    exit 1
+	fi
+
+sia un intero positivo
+	if [[ $3 = *[!0-9]* ]] ; then
+	    echo "Errore parametro 3: $3 non è un intero positivo" 1>&2
+	    exit 1
+	fi
+
+COMANDI VARI:
+
+
