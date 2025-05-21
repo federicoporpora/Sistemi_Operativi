@@ -1,4 +1,4 @@
-package lab_12_05_25;
+package labJava_12_05_25;
 
 public class BambinoZ extends Thread {
 	
