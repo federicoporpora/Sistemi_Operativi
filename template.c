@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include <time.h>
 #include <string.h>
+#include <fcntl.h>
 #include <signal.h>
 #define N 100
 
@@ -23,11 +24,11 @@ void figlio(int i);
 		./nomeFileEseguibile arg1 arg2 arg3 ...
 */
 
-/*	ERRORE GENERICO SENZA ERRORE VERO E PROPRIO DA SISTEMA OPERATIVO
+/*	ERRORE GENERICO SENZA ERRORE VERO E PROPRIO DA SO
 		fprintf(stderr, "MESSAGGIO DI ERRORE\n");
 		usage(argv[0]);
 		exit(EXIT_FAILURE);
-	SENNO' NEL CASO IN CUI IL SISTEMA OPERATIVO MANDI ERRORE, UTILIZZO
+	SENNO' UTILIZZO
 		perror("messaggio di errore");
 		exit(1);
 */
@@ -40,19 +41,9 @@ void figlio(int i);
 	GENERA UN INTERO COMPRESO TRA 0 E N-1
 */
 
-/*
-	LA FUNZIONE int p = wait(&status) METTE IN p IL PID DEL FIGLIO E METTE NELLO STATUS LO STATO DI TERMINAZIONE CODIFICATO. PER LEGGERLO:
-		if (WIFEXITED(status)) printf("%d", WEXITSTATUS(status));
-		else if (WIFSIGNALED(status)) printf("%d", WTERMSIG(status))
-*/
-
 int main(int argc, char *argv[]) {
     
 	int i, status;
-	
-	printf("\n-------------------------------------------");
-	printf("\nIl codice per ogni stringa di argomenti crea un figlio, ed ognuno ritorna con valori incrementali di multipli di 10.");
-	printf("\n-------------------------------------------\n\n");
 	
 	for (i = 0; i < argc - 1; i++) { // creazione figli, uno per argomento in argv
         pid[i] = fork();
@@ -75,12 +66,11 @@ int main(int argc, char *argv[]) {
         } else 
             printf("Padre (PID = %d): term. involontaria del figlio (PID = %d), segnale %d.\n", getpid(), p, WTERMSIG(status));
     }
-	printf("\nfinito!!!\n\n\n");
+	
 }
 
 void figlio(int i) {
-	//algoritmo del figlio
-	int code = i*10;
-	printf("%d° figlio (PID = %d), ritorno con codice %d\n", i+1, getpid(), code);
-	exit(code);
+	printf("%d° figlio (PID = %d), ritorno con codice %d\n", i+1, getpid(), i*10);
+	//algoritmo
+	exit(i * 10);
 }
