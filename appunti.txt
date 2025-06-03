@@ -1,7 +1,7 @@
 SHELL
 CONTROLLI:
 prima riga:
-	#!bin/bash
+	#!/bin/bash
 
 numero di argomenti (sostituisci N)
 	if [[ $# != N ]]; then
